@@ -1,29 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/gorilla/mux"
+	"todo/infrastructure"
+	"todo/router"
 )
 
-func handleRequests() {
-	myRouter := mux.NewRouter().StrictSlash(true)
-
-	myRouter.HandleFunc("/agenda", getAgenda).Methods("GET")
-	myRouter.HandleFunc("/work/{id}/{title}", newWork).Methods("POST")
-	myRouter.HandleFunc("/work/{id}", deleteWork).Methods("DELETE")
-	myRouter.HandleFunc("/work/{id}/{title}", updateWork).Methods("PUT")
-
-	log.Fatal(http.ListenAndServe(":8080", myRouter))
-}
-
 func main() {
-	fmt.Print("connected")
+	log.Println("Database name: ", infrastructure.GetDBName())
 
-	InitialMigration()
-
-	handleRequests()
-
+	log.Fatal(http.ListenAndServe(":"+infrastructure.GetAppPort(), router.Router()))
 }
