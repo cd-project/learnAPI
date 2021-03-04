@@ -1,0 +1,17 @@
+// model Todo
+// phần bên phải đọc GORM để biết thêm chi tiết
+type Todo struct {
+   Id		int		`gorm:"primaryKey"` 
+   Title 	string		`gorm:"column:title"` 
+   Description	string		`gorm:"column:description"` 
+   Finished	bool		`gorm:"column:finished"` 
+}
+
+***Yêu cầu: Viết 1 app todo-list đơn giản gồm 4 API sử dụng thư viện gorm để làm việc với database và sử dụng phần mềm POSTMAN để test API (có trên chrome-app)
+   1. API tạo mới dữ liệu todo-list
+   - Đầu vào là model Todo
+   2. API cập nhật dữ liệu todo-list
+   - Đầu vào gồm Id của record cần sửa và model Todo đã chỉnh sửa
+   3. API lấy tất cả dữ liệu todo-list
+   4. API xóa dữ liệu todo-list
+   - Đầu vào là Id của record cần xóa
