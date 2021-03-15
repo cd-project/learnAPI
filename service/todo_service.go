@@ -48,7 +48,7 @@ func (s *todoService) Update(id int, new *model.Todo) (*model.Todo, error) {
 	err := s.todoRepository.Update(id, new)
 	if err != nil {
 		log.Println(err.Error())
-		return nil, err
+		return new, err
 	}
 
 	return new, err

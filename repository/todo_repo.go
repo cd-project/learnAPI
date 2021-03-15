@@ -55,10 +55,11 @@ func (r *todoRepository) GetByID(id int) (*model.Todo, error) {
 func (r *todoRepository) Update(id int, new *model.Todo) error {
 	db := infrastructure.GetDB()
 
-	err := db.Debug().Raw("UPDATE todos SET title = ?, description = ?, finished = ? WHERE id = ?", new.Title, new.Description, new.Finished, id).Error
+	err := db.Debug().Exec("UPDATE todos SET title = ?, description = ?, finished = ? WHERE id = ?", new.Title, new.Description, new.Finished, id).Error
 	if err != nil {
 		log.Println(err.Error())
 	}
+	log.Println(new)
 
 	return err
 }
