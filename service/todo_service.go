@@ -1,14 +1,16 @@
 package service
 
 import (
+	"log"
 	"todo/model"
 	"todo/repository"
 )
 
+// interface TodoService
 type TodoService interface {
 	Create(new *model.Todo) (*model.Todo, error)
 	GetAll() []model.Todo
-	GetById(id int) ([]model.Todo, error)
+	GetByID(id int) (*model.Todo, error)
 	Update(id int, new *model.Todo) (*model.Todo, error)
 	Delete(id int) error
 }
@@ -31,18 +33,21 @@ func (s *todoService) GetAll() []model.Todo {
 	return list
 }
 
-func (s *todoService) GetById(id int) ([]model.Todo, error) {
-	list, err := s.todoRepository.GetById(id)
+func (s *todoService) GetByID(id int) (*model.Todo, error) {
+	todoObject, err := s.todoRepository.GetByID(id)
+	failureObject := model.Todo{ID: 4444, Title: "failureObj", Description: "failureObj", Finished: false}
 	if err != nil {
-		return nil, err
+		log.Println("error encountered / todo_service!", err.Error())
+		return &failureObject, err
 	}
 
-	return list, err
+	return todoObject, err
 }
 
 func (s *todoService) Update(id int, new *model.Todo) (*model.Todo, error) {
-	err := s.todoRepository.Update(new.ID, new)
+	err := s.todoRepository.Update(id, new)
 	if err != nil {
+		log.Println(err.Error())
 		return nil, err
 	}
 

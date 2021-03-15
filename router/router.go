@@ -18,11 +18,11 @@ func Router() http.Handler {
 		w.Write([]byte("pong"))
 	}).Methods("GET")
 
-	myRouter.HandleFunc("/work", todoController.Create).Methods("POST")
-	myRouter.HandleFunc("/work", todoController.GetAll).Methods("GET")
-	myRouter.HandleFunc("/work/{id}", todoController.GetById).Methods("GET")
-	myRouter.HandleFunc("/work/{id}", todoController.Update).Methods("PUT")
-	myRouter.HandleFunc("/work/{id}", todoController.Delete).Methods("DELETE")
+	myRouter.HandleFunc("/work/create", todoController.Create).Methods("POST")
+	myRouter.HandleFunc("/work/all", todoController.GetAll).Methods("GET")
+	myRouter.HandleFunc("/work/search/{id}", todoController.GetByID).Methods("GET")
+	myRouter.HandleFunc("/work/updater/{id}", todoController.Update).Methods("PUT")
+	myRouter.HandleFunc("/work/delete/{id}", todoController.Delete).Methods("DELETE")
 
 	return myRouter
 }

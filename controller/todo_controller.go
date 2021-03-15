@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -14,7 +15,7 @@ import (
 type TodoController interface {
 	Create(w http.ResponseWriter, r *http.Request)
 	GetAll(w http.ResponseWriter, r *http.Request)
-	GetById(w http.ResponseWriter, r *http.Request)
+	GetByID(w http.ResponseWriter, r *http.Request)
 	Update(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
 }
@@ -28,13 +29,13 @@ func (c *todoController) Create(w http.ResponseWriter, r *http.Request) {
 	var data model.Todo
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&data)
-	// if err != nil {
-	// 	// bad request
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	http.Error(w, http.StatusText(400), 400)
-	// 	log.Println(err)
-	// 	return
-	// }
+	if err != nil {
+		// bad request
+		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, http.StatusText(400), 400)
+		log.Println(err)
+		return
+	}
 	// create new Todo
 	new, err := c.todoService.Create(&data)
 	if err != nil {
@@ -49,20 +50,19 @@ func (c *todoController) Create(w http.ResponseWriter, r *http.Request) {
 func (c *todoController) GetAll(w http.ResponseWriter, r *http.Request) {
 	todos := c.todoService.GetAll()
 	json.NewEncoder(w).Encode(todos)
-	log.Println(todos)
 }
 
-func (c *todoController) GetById(w http.ResponseWriter, r *http.Request) {
+func (c *todoController) GetByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	strID := vars["id"]
 	intID, _ := strconv.Atoi(strID)
 
-	list, err := c.todoService.GetById(intID)
+	todoObject, err := c.todoService.GetByID(intID)
 	if err != nil {
-		panic(err.Error())
+		log.Println("error encountered! / todo_controller", err.Error())
 	}
 
-	json.NewEncoder(w).Encode(list)
+	json.NewEncoder(w).Encode(todoObject)
 }
 
 func (c *todoController) Update(w http.ResponseWriter, r *http.Request) {
@@ -73,6 +73,7 @@ func (c *todoController) Update(w http.ResponseWriter, r *http.Request) {
 	//get newTodo object from request body
 	var newTodo model.Todo
 	err := json.NewDecoder(r.Body).Decode(&newTodo)
+	fmt.Println(newTodo)
 	if err != nil {
 		// bad request
 		w.WriteHeader(http.StatusBadRequest)
