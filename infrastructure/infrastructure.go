@@ -23,8 +23,8 @@ func loadParameters() {
 	dbHost = "localhost"
 	dbPort = "5432"
 	dbUser = "postgres"
-	// dbPassword = "zxc1234567890A"
-	dbPassword = "0000" // My password
+	dbPassword = "zxc1234567890A"
+	//dbPassword = "0000" // My password
 	dbName = "model"
 }
 

@@ -7,8 +7,8 @@ import (
 
 type TodoService interface {
 	Create(new *model.Todo) (*model.Todo, error)
-	GetAll() ([]model.Todo, error)
-	GetById(id int) (*model.Todo, error)
+	GetAll() []model.Todo
+	GetById(id int) ([]model.Todo, error)
 	Update(id int, new *model.Todo) (*model.Todo, error)
 	Delete(id int) error
 }
@@ -22,28 +22,46 @@ func (s *todoService) Create(new *model.Todo) (*model.Todo, error) {
 	if err != nil {
 		return nil, err
 	}
-	return todo, nil
+	return todo, err
 }
 
-func (s *todoService) GetAll() ([]model.Todo, error) {
-	panic("not implemented") // TODO: Implement
+func (s *todoService) GetAll() []model.Todo {
+	list := s.todoRepository.GetAll()
+
+	return list
 }
 
-func (s *todoService) GetById(id int) (*model.Todo, error) {
-	panic("not implemented") // TODO: Implement
+func (s *todoService) GetById(id int) ([]model.Todo, error) {
+	list, err := s.todoRepository.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return list, err
 }
 
 func (s *todoService) Update(id int, new *model.Todo) (*model.Todo, error) {
-	panic("not implemented") // TODO: Implement
+	err := s.todoRepository.Update(new.ID, new)
+	if err != nil {
+		return nil, err
+	}
+
+	return new, err
 }
 
 func (s *todoService) Delete(id int) error {
-	panic("not implemented") // TODO: Implement
+	err := s.todoRepository.Delete(id)
+	if err != nil {
+		return err
+	}
+
+	return err
 }
 
 func NewTodoService() TodoService {
 	todoRepo := repository.NewTodoRepository()
-	return &todoService{
+	x0 := &todoService{
 		todoRepository: todoRepo,
 	}
+	return x0
 }

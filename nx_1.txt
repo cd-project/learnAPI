@@ -1,0 +1,23 @@
+*Nhận xét:
+- Không nên viết mọi thứ (kết nối db, xử lý dữ liệu, route,...) vào cũng 1 package mà nên chia nhỏ ra thành nhiều package (phân tầng) để dễ quản lý
+- Đã tìm hiểu về thư viện GORM và biết cách ứng dụng nhưng không nên viết theo kiểu cứ gọi API là phải kết nối với db rồi đóng mà chỉ nên kết nối 1 lần duy nhất và gọi để sử dụng!!!
+- Ở 1 số API như Create và Update không nên để tất cả các trường của model lên trên path, em có thể truyền model vào trong body của request và decode nó
+( Hướng dẫn test API create bằng postman:
+	- nhập đường dẫn: localhost:8080/work
+	- chọn phương thức POST
+	- ở phần Body => chọn định dạng raw => kiểu Text hoặc JSON
+	- nhập data cần truyền. VD: cần tạo 1 task với {title:"test title", description:"test"}
+		{
+    		   "Title": "test title"
+    		   "Description": "test",
+    		   "Finished": false
+		}
+)
+- Anh đã viết lại code của e theo cấu trúc mà lab mình đang dùng. Em đọc và có gì không hiểu có thể hỏi anh
+
+*Nhiệm vụ tới:
+- Đọc qua về Go module (rất dễ, hiểu đơn gian là quản lý thư viện đang sử dụng)
+- Hiểu về cấu trúc project, luồng hoạt động giữa các tầng và viết cáo cáo về những gì đã hiểu
+- Ở tầng repo, sử dụng câu lệnh Exec() và Rows() trong GORM để hiểu câu lệnh trong sql, không sử dụng hàm hỗ trợ sẵn như Create(), ...
+- Hoàn thành các API chưa Implement
+- Có thể tìm hiểu qua về html, css để code giao diện. Không cần đẹp nhưng có thể hiện lên todo-list và thao tác đơn giản
