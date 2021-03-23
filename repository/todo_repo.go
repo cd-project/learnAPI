@@ -10,11 +10,11 @@ type todoRepository struct {
 	// this file deals with database directly.
 }
 
-// Insert add new todo
-func (r *todoRepository) Insert(new *model.Todo) (*model.Todo, error) {
+// Insert add new todo into board with boardID
+func (r *todoRepository) Insert(new *model.Todo, boardID int) (*model.Todo, error) {
 	db := infrastructure.GetDB()
 
-	err := db.Debug().Exec("INSERT INTO todos(title, description, finished) VALUES (?,?,?)", new.Title, new.Description, new.Finished).Error
+	err := db.Debug().Exec("INSERT INTO todos(title, description, finished, boardid) VALUES (?,?,?,?)", new.Title, new.Description, new.Finished, boardID).Error
 	if err != nil {
 		log.Println("error", err.Error())
 		return nil, err
@@ -37,7 +37,6 @@ func (r *todoRepository) GetAll() []model.Todo {
 	return res
 }
 
-// only viable when there is no duplicate ID?
 func (r *todoRepository) GetByID(id int) (*model.Todo, error) {
 	db := infrastructure.GetDB()
 
@@ -52,6 +51,17 @@ func (r *todoRepository) GetByID(id int) (*model.Todo, error) {
 	return &res, err
 }
 
+func (r *todoRepository) UpdateTodoInBoard(boardID int, todoID int, newTodo *model.Todo) (*model.Todo, error) {
+	db := infrastructure.GetDB()
+
+	err := db.Debug().Exec("UPDATE todos SET title = ?, description = ?, finished = ? WHERE boardid = ? AND id = ?", newTodo.Title, newTodo.Description, newTodo.Finished, boardID, todoID).Error
+	if err != nil {
+		log.Println("error REPOSITORY/UpdateTodoInBoard", err.Error())
+		return newTodo, err
+	}
+
+	return newTodo, err
+}
 func (r *todoRepository) Update(id int, new *model.Todo) error {
 	db := infrastructure.GetDB()
 

@@ -59,6 +59,9 @@ func InitDatabase() error {
 	log.Println("Migrating database...")
 	db.AutoMigrate(
 		&model.Todo{},
+		&model.Board{},
+		&model.User{},
+		&model.Profile{},
 	)
 
 	return nil

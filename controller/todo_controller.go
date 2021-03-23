@@ -36,8 +36,12 @@ func (c *todoController) Create(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
+	vars := mux.Vars(r)
+	strID := vars["boardid"]
+	boardID, _ := strconv.Atoi(strID)
 	// create new Todo
-	new, err := c.todoService.Create(&data)
+	new, err := c.todoService.Create(&data, boardID)
 	if err != nil {
 		log.Println(err)
 		w.Write([]byte(err.Error()))
