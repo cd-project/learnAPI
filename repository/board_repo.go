@@ -11,6 +11,7 @@ type boardRepository struct {
 	// empty structure
 }
 
+// CreateBoard create new board for the specified uid
 func (b *boardRepository) CreateBoard(newBoard *model.Board, uid int) (*model.Board, error) {
 	db := infrastructure.GetDB()
 
@@ -23,8 +24,7 @@ func (b *boardRepository) CreateBoard(newBoard *model.Board, uid int) (*model.Bo
 	return newBoard, nil
 }
 
-// update specified todo(id) of specified board(id).
-
+// DeleteBoard delete board with boardID
 func (b *boardRepository) DeleteBoard(boardID int) (error, error) {
 	db := infrastructure.GetDB()
 
@@ -37,6 +37,7 @@ func (b *boardRepository) DeleteBoard(boardID int) (error, error) {
 	return err_boards, err_todos
 }
 
+// get all boards from one uid.
 func (b *boardRepository) GetByUserID(uid int) []model.Board {
 	db := infrastructure.GetDB()
 
@@ -52,6 +53,7 @@ func (b *boardRepository) GetByUserID(uid int) []model.Board {
 
 }
 
+// get all board available on database.
 func (b *boardRepository) GetAllBoard() []model.Board {
 	db := infrastructure.GetDB()
 
@@ -66,6 +68,7 @@ func (b *boardRepository) GetAllBoard() []model.Board {
 	return allBoard
 }
 
+// update board content (title / description)
 func (b *boardRepository) UpdateBoard(boardID int, updateContent *model.Board) error {
 	db := infrastructure.GetDB()
 
@@ -76,6 +79,8 @@ func (b *boardRepository) UpdateBoard(boardID int, updateContent *model.Board) e
 
 	return err
 }
+
+// filter for all fields, except boardID
 func (b *boardRepository) FilterForSystem(filterContent *model.Board) []model.Board {
 	db := infrastructure.GetDB()
 
