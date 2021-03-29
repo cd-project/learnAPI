@@ -1,37 +1,48 @@
 package router
 
 import (
+	"log"
 	"net/http"
+	"os"
 	"todo/controller"
 
-	"github.com/gorilla/mux"
+	_ "todo/docs"
+
+	"github.com/go-chi/chi/v5"
+	httpSwagger "github.com/swaggo/http-swagger"
+)
+
+var (
+	infoLog = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	errLog  = log.New(os.Stderr, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 )
 
 func Router() http.Handler {
-	myRouter := mux.NewRouter().StrictSlash(true)
+	myRouter := chi.NewRouter()
 
 	// Declare controller
 	todoController := controller.NewTodoController()
 	boardController := controller.NewBoardController()
 
 	// TEST
-	myRouter.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("pong"))
-	}).Methods("GET")
+	myRouter.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
+	))
+
 	// Routers for TODOS table
-	myRouter.HandleFunc("/work/{boardid}/create", todoController.Create).Methods("POST")
-	myRouter.HandleFunc("/work/all", todoController.GetAll).Methods("GET")
-	myRouter.HandleFunc("/work/search/{id}", todoController.GetByID).Methods("GET")
-	myRouter.HandleFunc("/work/updater/{id}", todoController.Update).Methods("PUT")
-	myRouter.HandleFunc("/work/delete/{id}", todoController.Delete).Methods("DELETE")
+	myRouter.Post("/work/create", todoController.Create)
+	myRouter.Get("/work/all", todoController.GetAll)
+	myRouter.Get("/work/search/{id}", todoController.GetByID)
+	myRouter.Put("/work/updater/{id}", todoController.Update)
+	myRouter.Delete("/work/delete/{id}", todoController.Delete)
 
 	// Routers for BOARD table
-	myRouter.HandleFunc("/user/{uid}/board/create", boardController.CreateBoard).Methods("POST")
-	myRouter.HandleFunc("/board/{boardid}/update", boardController.UpdateBoard).Methods("PUT")
-	myRouter.HandleFunc("/board/delete/{boardid}", boardController.DeleteBoard).Methods("DELETE")
-	myRouter.HandleFunc("/user/{uid}/allBoard", boardController.GetByUserID).Methods("GET")
-	myRouter.HandleFunc("/sys/allBoard", boardController.GetAllBoard).Methods("GET")
-	myRouter.HandleFunc("/sys/filter", boardController.FilterForSystem).Methods("GET")
+	myRouter.Post("/user/{uid}/board/create", boardController.CreateBoard)
+	myRouter.Put("/board/{boardid}/update", boardController.UpdateBoard)
+	myRouter.Delete("/board/delete/{boardid}", boardController.DeleteBoard)
+	myRouter.Get("/user/{uid}/allBoard", boardController.GetByUserID)
+	myRouter.Get("/sys/allBoard", boardController.GetAllBoard)
+	myRouter.Get("/sys/filter", boardController.FilterForSystem)
 
 	// Routers for USER table
 	return myRouter

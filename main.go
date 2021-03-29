@@ -7,6 +7,10 @@ import (
 	"todo/router"
 )
 
+// @title Swagger
+// @version 1.0
+// @host localhost:8080
+// @BasePath /
 func main() {
 	log.Println("Database name: ", infrastructure.GetDBName())
 

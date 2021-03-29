@@ -1,11 +1,35 @@
 package infrastructure
 
 import (
+	"crypto/rsa"
 	"log"
 	"todo/model"
 
+	"github.com/go-chi/jwtauth"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+)
+
+const (
+	APPPORT    = ""
+	DBHOST     = ""
+	DBPORT     = ""
+	DBUSER     = ""
+	DBPASSWORD = ""
+	DBNAME     = ""
+
+	HTTPSWAGGER = ""
+	ROOTPATH    = ""
+
+	RSAPUBLICPATH      = ""
+	RSAPRIVATEPATH     = ""
+	RSAPRIVATEPASSWORD = ""
+
+	EXTENDHOUR        = ""
+	EXTENDHOURREFRESH = ""
+
+	NANO_TO_SECOND = 1000000000
+	Extend_Hour    = 72
 )
 
 var (
@@ -16,6 +40,13 @@ var (
 	dbUser     string
 	dbPassword string
 	dbName     string
+
+	encodeAuth *jwtauth.JWTAuth
+	privateKey *rsa.PrivateKey
+	publicKey  interface{}
+
+	rsaPublicPath  string
+	rsaPrivatePath string
 )
 
 func loadParameters() {

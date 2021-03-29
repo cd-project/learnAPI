@@ -11,10 +11,10 @@ type todoRepository struct {
 }
 
 // Insert add new todo into board with boardID
-func (r *todoRepository) Insert(new *model.Todo, boardID int) (*model.Todo, error) {
+func (r *todoRepository) Insert(new *model.Todo) (*model.Todo, error) {
 	db := infrastructure.GetDB()
 
-	err := db.Debug().Exec("INSERT INTO todos(title, description, finished, boardid) VALUES (?,?,?,?)", new.Title, new.Description, new.Finished, boardID).Error
+	err := db.Debug().Exec("INSERT INTO todos(title, description, finished, boardid) VALUES (?,?,?,?)", new.Title, new.Description, new.Finished, new.BoardID).Error
 	if err != nil {
 		log.Println("error", err.Error())
 		return nil, err

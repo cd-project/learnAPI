@@ -8,7 +8,7 @@ import (
 	"todo/model"
 	"todo/service"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 )
 
 type BoardController interface {
@@ -37,14 +37,15 @@ func (c *boardController) CreateBoard(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println(data)
 	// get user id from URL
-	vars := mux.Vars(r)
-	strID := vars["uid"]
-	uid, _ := strconv.Atoi(strID)
+	strUID := chi.URLParam(r, "uid")
+
+	uid, _ := strconv.Atoi(strUID)
 	// create new Board
 	newBoard, err := c.boardService.CreateBoard(&data, uid)
 	if err != nil {
 		log.Println("error CONTROLLER/CreateBoard", err.Error())
 		w.Write([]byte(err.Error()))
+		return
 	}
 
 	log.Println(newBoard)
@@ -56,27 +57,28 @@ func (c *boardController) UpdateBoard(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&data)
 	if err != nil {
-		// bad request
 		log.Println("error CONTROLLER/UpdateBoard", err.Error())
+		w.Write([]byte(err.Error()))
+		return
 	} else {
 		c.boardService.UpdateBoard(data.ID, &data)
 	}
 }
 
 func (c *boardController) DeleteBoard(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	str_boardID := vars["boardid"]
+	str_boardID := chi.URLParam(r, "boardid")
 	boardID, _ := strconv.Atoi(str_boardID)
 
 	err1, err2 := c.boardService.DeleteBoard(boardID)
 	if err1 != nil || err2 != nil {
 		log.Println("error CONTROLLER/DeleteBoard", err1.Error(), err2.Error())
+		errString := err1.Error() + ", " + err2.Error()
+		w.Write([]byte(errString))
 	}
 }
 
 func (c *boardController) GetByUserID(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	strUID := vars["uid"]
+	strUID := chi.URLParam(r, "uid")
 	uid, _ := strconv.Atoi(strUID)
 
 	userBoards := c.boardService.GetByUserID(uid)
@@ -89,7 +91,7 @@ func (c *boardController) GetAllBoard(w http.ResponseWriter, r *http.Request) {
 	allBoard := c.boardService.GetAllBoard()
 	json.NewEncoder(w).Encode(allBoard)
 
-	w.Write([]byte("GET ALL BOARD: SUCCESSFUL!"))
+	w.Write([]byte("GetAllBoard successfuly!"))
 }
 
 func (c *boardController) FilterForSystem(w http.ResponseWriter, r *http.Request) {
@@ -98,16 +100,19 @@ func (c *boardController) FilterForSystem(w http.ResponseWriter, r *http.Request
 	err := decoder.Decode(&filteredContent)
 	if err != nil {
 		log.Println("error CONTROLLER/FilterForSystem", err.Error())
+		w.Write([]byte(err.Error()))
+		return
 	} else {
 		filteredOutput := c.boardService.FilterForSystem(&filteredContent)
 		json.NewEncoder(w).Encode(filteredOutput)
+		w.Write([]byte("Data filtered!"))
 	}
 }
 
 func NewBoardController() BoardController {
-	bsv := service.NewBoardService()
+	boardService := service.NewBoardService()
 
 	return &boardController{
-		boardService: bsv,
+		boardService: boardService,
 	}
 }

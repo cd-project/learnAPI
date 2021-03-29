@@ -1,0 +1,111 @@
+basePath: /
+definitions:
+  model.Todo:
+    properties:
+      boardID:
+        description: "BoardID \tid of board which has this todo."
+        type: integer
+      description:
+        type: string
+      finished:
+        type: boolean
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Swagger
+  version: "1.0"
+paths:
+  /work/all:
+    get:
+      consumes:
+      - application/json
+      description: Get all Todos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Get all Todos
+  /work/create:
+    post:
+      consumes:
+      - application/json
+      description: Create new Todo
+      parameters:
+      - description: Todo information
+        in: body
+        name: TodoInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.Todo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Create new Todo
+      tags:
+      - todo-manager-apis
+  /work/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a Todo with an ID specified
+      parameters:
+      - description: ID of the to be deleted Todo
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Delete a Todo
+  /work/search/{id}:
+    get:
+      consumes:
+      - application/json
+      description: gets todo by its ID
+      parameters:
+      - description: ID of needed todo
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: gets todo by its ID
+  /work/updater/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an ID specified Todo
+      parameters:
+      - description: ID of the to be updated Todo
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: UpdateContent information
+        in: body
+        name: UpdateContent
+        required: true
+        schema:
+          $ref: '#/definitions/model.Todo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Update an ID specified Todo
+swagger: "2.0"

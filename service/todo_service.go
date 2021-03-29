@@ -8,7 +8,7 @@ import (
 
 // interface TodoService
 type TodoService interface {
-	Create(new *model.Todo, boardID int) (*model.Todo, error)
+	Create(newTodo *model.Todo) (*model.Todo, error)
 	GetAll() []model.Todo
 	GetByID(id int) (*model.Todo, error)
 	Update(id int, new *model.Todo) (*model.Todo, error)
@@ -19,8 +19,8 @@ type todoService struct {
 	todoRepository model.TodoRepository
 }
 
-func (s *todoService) Create(new *model.Todo, boardID int) (*model.Todo, error) {
-	todo, err := s.todoRepository.Insert(new, boardID)
+func (s *todoService) Create(newTodo *model.Todo) (*model.Todo, error) {
+	todo, err := s.todoRepository.Insert(newTodo)
 	if err != nil {
 		return nil, err
 	}

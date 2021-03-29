@@ -10,7 +10,7 @@ type Todo struct {
 }
 
 type TodoRepository interface {
-	Insert(new *Todo, boardID int) (*Todo, error)
+	Insert(new *Todo) (*Todo, error)
 	GetAll() []Todo
 	GetByID(id int) (*Todo, error)
 	Update(id int, new *Todo) error
