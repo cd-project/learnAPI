@@ -33,27 +33,32 @@ type todoController struct {
 // @Success 200
 // @Router /work/create [post]
 func (c *todoController) Create(w http.ResponseWriter, r *http.Request) {
-	// get body request and decode
+	w.Header().Set("Content-Type", "application/json")
 	var data model.Todo
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&data)
-	if err != nil {
-		// bad request
-		w.WriteHeader(http.StatusBadRequest)
-		http.Error(w, http.StatusText(400), 400)
-		log.Println(err)
+	decodeErr := decoder.Decode(&data)
+	jsonResponse := struct {
+		Message string
+		Content *model.Todo
+	}{
+		Message: "",
+	}
+	if decodeErr != nil {
+		jsonResponse.Message = "Decoder error: " + decodeErr.Error()
+		json.NewEncoder(w).Encode(jsonResponse)
 		return
 	}
 
-	// create new Todo
-	new, err := c.todoService.Create(&data)
-	if err != nil {
-		log.Println(err)
-		w.Write([]byte(err.Error()))
+	newContent, createErr := c.todoService.Create(&data)
+	if createErr != nil {
+		jsonResponse.Message += "Create error: " + createErr.Error()
+		return
 	}
-	// success
-	log.Println(new)
-	w.Write([]byte("INSERTED SUCCESSFULLY"))
+	log.Println(newContent)
+	jsonResponse.Message = "New todo created successfully"
+	jsonResponse.Content = newContent
+	json.NewEncoder(w).Encode(jsonResponse)
+
 }
 
 // GetAll gets all Todos
