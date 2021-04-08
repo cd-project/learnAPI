@@ -81,7 +81,7 @@ func (b *boardRepository) UpdateBoard(boardID int, updateContent *model.Board) e
 }
 
 // filter for all fields, except boardID
-func (b *boardRepository) FilterForSystem(filterContent *model.Board) []model.Board {
+func (b *boardRepository) Filter(filterContent *model.Board) []model.Board {
 	db := infrastructure.GetDB()
 
 	sqlString := "id > 0"

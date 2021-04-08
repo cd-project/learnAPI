@@ -1,5 +1,16 @@
 basePath: /
 definitions:
+  model.Board:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      profileID:
+        type: integer
+      title:
+        type: string
+    type: object
   model.Todo:
     properties:
       boardID:
@@ -20,6 +31,119 @@ info:
   title: Swagger
   version: "1.0"
 paths:
+  /board/{boardid}/update:
+    put:
+      consumes:
+      - application/json
+      description: given new data and id, update board
+      parameters:
+      - description: ID of the to be updated board
+        in: path
+        name: boardid
+        required: true
+        type: integer
+      - description: Update content
+        in: body
+        name: UpdateContent
+        required: true
+        schema:
+          $ref: '#/definitions/model.Board'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: get board updated with new data
+  /board/delete/{boardid}:
+    delete:
+      consumes:
+      - application/json
+      description: Board with boardID will be deleted
+      parameters:
+      - description: ID of the to be deleted board
+        in: path
+        name: boardid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Board with boardID will be deleted
+  /sys/allBoard:
+    get:
+      consumes:
+      - application/json
+      description: get all boards
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: get all boards
+      tags:
+      - board-manager-apis
+  /sys/filter:
+    put:
+      consumes:
+      - application/json
+      description: |-
+        board db will be filtered using given model
+        json
+      parameters:
+      - description: Filter Content
+        in: body
+        name: FilterContent
+        required: true
+        schema:
+          $ref: '#/definitions/model.Board'
+      responses:
+        "200":
+          description: ""
+      summary: filtered data will be shown
+      tags:
+      - board-manager-apis
+  /user/{uid}/allBoard:
+    get:
+      consumes:
+      - application/json
+      description: gets all board belong to UserID
+      parameters:
+      - description: User ID
+        in: path
+        name: uid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: gets all board belong to UserID
+  /user/{uid}/board/create:
+    post:
+      consumes:
+      - application/json
+      description: create a new board with given model
+      parameters:
+      - description: Owner of this board
+        in: path
+        name: uid
+        required: true
+        type: integer
+      - description: Board information
+        in: body
+        name: BoardInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.Board'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: create new Board with given model
   /work/all:
     get:
       consumes:

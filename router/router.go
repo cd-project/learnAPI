@@ -42,7 +42,7 @@ func Router() http.Handler {
 	myRouter.Delete("/board/delete/{boardid}", boardController.DeleteBoard)
 	myRouter.Get("/user/{uid}/allBoard", boardController.GetByUserID)
 	myRouter.Get("/sys/allBoard", boardController.GetAllBoard)
-	myRouter.Get("/sys/filter", boardController.FilterForSystem)
+	myRouter.Put("/sys/filter", boardController.Filter)
 
 	// Routers for USER table
 	return myRouter

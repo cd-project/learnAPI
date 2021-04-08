@@ -14,5 +14,5 @@ type BoardRepository interface {
 	GetByUserID(uid int) []Board
 	GetAllBoard() []Board
 	UpdateBoard(boardID int, updateContent *Board) error
-	FilterForSystem(filterContent *Board) []Board
+	Filter(filterContent *Board) []Board
 }

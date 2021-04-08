@@ -32,7 +32,7 @@ func loadAuthToken() error {
 		return err
 	}
 	publicPem, _ := pem.Decode(publicReader)
-	publicKey, err = x509.ParsePKIXPublicKey(publicPem.Bytes)
+	publicKey, _ = x509.ParsePKIXPublicKey(publicPem.Bytes)
 
 	// signKey = privateKey
 	// verifyKey = publicKey

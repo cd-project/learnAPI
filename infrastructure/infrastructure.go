@@ -45,8 +45,14 @@ var (
 	privateKey *rsa.PrivateKey
 	publicKey  interface{}
 
+	InfoLog *log.Logger
+	ErrLog  *log.Logger
+
 	rsaPublicPath  string
 	rsaPrivatePath string
+
+	extendHour        int
+	extendHourRefresh int
 )
 
 func loadParameters() {
@@ -118,4 +124,24 @@ func GetDBName() string {
 // GetAppPort export app port
 func GetAppPort() string {
 	return appPort
+}
+
+// GetEncodeAuth get token auth
+func GetEncodeAuth() *jwtauth.JWTAuth {
+	return encodeAuth
+}
+
+// GetExtendAccessMinute export access extend minute
+func GetExtendAccessHour() int {
+	return extendHour
+}
+
+// GetExtendRefreshHour export refresh extends hour
+func GetExtendRefreshHour() int {
+	return extendHourRefresh
+}
+
+//
+func GetPublicKey() interface{} {
+	return publicKey
 }

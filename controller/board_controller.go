@@ -17,55 +17,103 @@ type BoardController interface {
 	DeleteBoard(w http.ResponseWriter, r *http.Request)
 	GetByUserID(w http.ResponseWriter, r *http.Request)
 	GetAllBoard(w http.ResponseWriter, r *http.Request)
-	FilterForSystem(w http.ResponseWriter, r *http.Request)
+	Filter(w http.ResponseWriter, r *http.Request)
 }
 
 type boardController struct {
 	boardService service.BoardService
 }
 
+// CreateBoard create new Board godoc
+// @tag board-manager-apis
+// @Summary create new Board with given model
+// @Description create a new board with given model
+// @Accept json
+// @Produce json
+// @Param uid path integer true "Owner of this board"
+// @Param BoardInfo body model.Board true "Board information"
+// @Success 200
+// @Router /user/{uid}/board/create [post]
 func (c *boardController) CreateBoard(w http.ResponseWriter, r *http.Request) {
-	// decode request body
+	w.Header().Set("Content-Type", "application/json")
+	jsonResponse := struct {
+		Message string
+		Data    *model.Board
+	}{}
 	var data model.Board
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&data)
-	if err != nil {
+	decodeErr := decoder.Decode(&data)
+	if decodeErr != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		http.Error(w, http.StatusText(400), 400)
-		log.Println(err)
+		jsonResponse.Message = decodeErr.Error()
+		log.Println(decodeErr)
 		return
 	}
-	log.Println(data)
 	// get user id from URL
 	strUID := chi.URLParam(r, "uid")
-
 	uid, _ := strconv.Atoi(strUID)
 	// create new Board
-	newBoard, err := c.boardService.CreateBoard(&data, uid)
-	if err != nil {
-		log.Println("error CONTROLLER/CreateBoard", err.Error())
-		w.Write([]byte(err.Error()))
+	newBoard, dbErr := c.boardService.CreateBoard(&data, uid)
+	if dbErr != nil {
+		log.Println("error CONTROLLER/CreateBoard", dbErr.Error())
+		jsonResponse.Message += dbErr.Error()
 		return
 	}
-
-	log.Println(newBoard)
-	w.Write([]byte("CREATED SUCCESSFULLY"))
+	jsonResponse.Message = "Created board successful, board data:"
+	jsonResponse.Data = newBoard
+	jsonResponse.Data.ProfileID = uid
+	json.NewEncoder(w).Encode(jsonResponse)
 }
 
+// UpdateBoard updates board of specified ID with new data.
+// @tag board-manager-apis
+// @Summary get board updated with new data
+// @Description given new data and id, update board
+// @Accept json
+// @Produce json
+// @Param boardid path integer true "ID of the to be updated board"
+// @Param UpdateContent body model.Board true "Update content"
+// @Success 200
+// @Router /board/{boardid}/update [put]
 func (c *boardController) UpdateBoard(w http.ResponseWriter, r *http.Request) {
-	var data model.Board
+	w.Header().Set("Content-Type", "application/json")
+	strBID := chi.URLParam(r, "boardid")
+	boardID, _ := strconv.Atoi(strBID)
+	jsonResponse := struct {
+		Message       string
+		UpdateContent model.Board
+	}{}
+	var updateContent model.Board
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&data)
-	if err != nil {
-		log.Println("error CONTROLLER/UpdateBoard", err.Error())
-		w.Write([]byte(err.Error()))
+	decodeErr := decoder.Decode(&updateContent)
+	if decodeErr != nil {
+		log.Println("error CONTROLLER/UpdateBoard", decodeErr.Error())
+		jsonResponse.Message = decodeErr.Error()
 		return
 	} else {
-		c.boardService.UpdateBoard(data.ID, &data)
+		dbErr := c.boardService.UpdateBoard(boardID, &updateContent)
+		if dbErr != nil {
+			log.Println("error CONTROLLER/UpdateBoard", dbErr.Error())
+			jsonResponse.Message += dbErr.Error()
+			return
+		}
 	}
+	jsonResponse.Message = "Updated content of board " + strBID
+	jsonResponse.UpdateContent = updateContent
+	json.NewEncoder(w).Encode(jsonResponse)
 }
 
+// DeleteBoard deletes board with boardID
+// @tag board-manager-apis
+// @Summary Board with boardID will be deleted
+// @Description Board with boardID will be deleted
+// @Accept json
+// @Produce json
+// @Param boardid path integer true "ID of the to be deleted board"
+// @Success 200
+// @Router /board/delete/{boardid} [delete]
 func (c *boardController) DeleteBoard(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	str_boardID := chi.URLParam(r, "boardid")
 	boardID, _ := strconv.Atoi(str_boardID)
 
@@ -77,36 +125,83 @@ func (c *boardController) DeleteBoard(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetByUserID gets all board belong to an User
+// @tag board-manager-apis
+// @Summary gets all board belong to UserID
+// @Description gets all board belong to UserID
+// @Accept json
+// @Produce json
+// @Param uid path integer true "User ID"
+// @Success 200
+// @Router /user/{uid}/allBoard [get]
 func (c *boardController) GetByUserID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	strUID := chi.URLParam(r, "uid")
 	uid, _ := strconv.Atoi(strUID)
 
 	userBoards := c.boardService.GetByUserID(uid)
-	json.NewEncoder(w).Encode(userBoards)
 
-	w.Write([]byte("GetByUserID successfully!"))
+	jsonResponse := struct {
+		Message string
+		Boards  []model.Board
+	}{
+		Message: "Getting boards of user " + strUID,
+		Boards:  userBoards,
+	}
+	json.NewEncoder(w).Encode(jsonResponse)
+
 }
 
+// GetAllBoard gets all boards currently available in database
+// @tags board-manager-apis
+// @Summary get all boards
+// @Description get all boards
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /sys/allBoard [get]
 func (c *boardController) GetAllBoard(w http.ResponseWriter, r *http.Request) {
-	allBoard := c.boardService.GetAllBoard()
-	json.NewEncoder(w).Encode(allBoard)
+	w.Header().Set("Content-Type", "application/json")
+	allBoards := c.boardService.GetAllBoard()
+	jsonResponse := struct {
+		Message string
+		Boards  []model.Board
+	}{
+		Message: "Get all boards: Successful",
+		Boards:  allBoards,
+	}
 
-	w.Write([]byte("GetAllBoard successfuly!"))
+	json.NewEncoder(w).Encode(jsonResponse)
 }
 
-func (c *boardController) FilterForSystem(w http.ResponseWriter, r *http.Request) {
+// Filter filters data with given model
+// @tags board-manager-apis
+// @Summary filtered data will be shown
+// @Description board db will be filtered using given model
+// @Accept json
+// @Description json
+// @Param FilterContent body model.Board true "Filter Content"
+// @Success 200
+// @Router /sys/filter [put]
+func (c *boardController) Filter(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	jsonResponse := struct {
+		Message         string
+		FilteredContent []model.Board
+	}{}
 	var filteredContent model.Board
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&filteredContent)
-	if err != nil {
-		log.Println("error CONTROLLER/FilterForSystem", err.Error())
-		w.Write([]byte(err.Error()))
+	decodeErr := decoder.Decode(&filteredContent)
+	if decodeErr != nil {
+		log.Println("error CONTROLLER/Filter", decodeErr.Error())
+		jsonResponse.Message = decodeErr.Error()
 		return
 	} else {
-		filteredOutput := c.boardService.FilterForSystem(&filteredContent)
-		json.NewEncoder(w).Encode(filteredOutput)
-		w.Write([]byte("Data filtered!"))
+		filteredOutput := c.boardService.Filter(&filteredContent)
+		jsonResponse.Message = "Filtered content:"
+		jsonResponse.FilteredContent = filteredOutput
 	}
+	json.NewEncoder(w).Encode(jsonResponse)
 }
 
 func NewBoardController() BoardController {

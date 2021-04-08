@@ -12,7 +12,7 @@ type BoardService interface {
 	GetByUserID(uid int) []model.Board
 	GetAllBoard() []model.Board
 	UpdateBoard(boardID int, updateContent *model.Board) error
-	FilterForSystem(filterContent *model.Board) []model.Board
+	Filter(filterContent *model.Board) []model.Board
 }
 
 type boardService struct {
@@ -65,8 +65,8 @@ func (s *boardService) GetAllBoard() []model.Board {
 	return allBoard
 }
 
-func (s *boardService) FilterForSystem(filterContent *model.Board) []model.Board {
-	filteredOutput := s.boardRepository.FilterForSystem(filterContent)
+func (s *boardService) Filter(filterContent *model.Board) []model.Board {
+	filteredOutput := s.boardRepository.Filter(filterContent)
 	return filteredOutput
 }
 

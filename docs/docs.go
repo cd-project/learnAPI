@@ -24,6 +24,176 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/board/delete/{boardid}": {
+            "delete": {
+                "description": "Board with boardID will be deleted",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Board with boardID will be deleted",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the to be deleted board",
+                        "name": "boardid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/board/{boardid}/update": {
+            "put": {
+                "description": "given new data and id, update board",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "get board updated with new data",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the to be updated board",
+                        "name": "boardid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update content",
+                        "name": "UpdateContent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Board"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/sys/allBoard": {
+            "get": {
+                "description": "get all boards",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "board-manager-apis"
+                ],
+                "summary": "get all boards",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/sys/filter": {
+            "put": {
+                "description": "board db will be filtered using given model\njson",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "board-manager-apis"
+                ],
+                "summary": "filtered data will be shown",
+                "parameters": [
+                    {
+                        "description": "Filter Content",
+                        "name": "FilterContent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Board"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/{uid}/allBoard": {
+            "get": {
+                "description": "gets all board belong to UserID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "gets all board belong to UserID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/{uid}/board/create": {
+            "post": {
+                "description": "create a new board with given model",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "create new Board with given model",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Owner of this board",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Board information",
+                        "name": "BoardInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Board"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/work/all": {
             "get": {
                 "description": "Get all Todos",
@@ -161,6 +331,23 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.Board": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "profileID": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Todo": {
             "type": "object",
             "properties": {
