@@ -25,7 +25,7 @@ type boardController struct {
 }
 
 // CreateBoard create new Board godoc
-// @tag board-manager-apis
+// @tags board-manager-apis
 // @Summary create new Board with given model
 // @Description create a new board with given model
 // @Accept json
@@ -33,7 +33,7 @@ type boardController struct {
 // @Param uid path integer true "Owner of this board"
 // @Param BoardInfo body model.Board true "Board information"
 // @Success 200
-// @Router /user/{uid}/board/create [post]
+// @Router /board/{uid}/create [post]
 func (c *boardController) CreateBoard(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jsonResponse := struct {
@@ -66,7 +66,7 @@ func (c *boardController) CreateBoard(w http.ResponseWriter, r *http.Request) {
 }
 
 // UpdateBoard updates board of specified ID with new data.
-// @tag board-manager-apis
+// @tags board-manager-apis
 // @Summary get board updated with new data
 // @Description given new data and id, update board
 // @Accept json
@@ -104,7 +104,7 @@ func (c *boardController) UpdateBoard(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteBoard deletes board with boardID
-// @tag board-manager-apis
+// @tags board-manager-apis
 // @Summary Board with boardID will be deleted
 // @Description Board with boardID will be deleted
 // @Accept json
@@ -126,14 +126,14 @@ func (c *boardController) DeleteBoard(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetByUserID gets all board belong to an User
-// @tag board-manager-apis
+// @tags board-manager-apis
 // @Summary gets all board belong to UserID
 // @Description gets all board belong to UserID
 // @Accept json
 // @Produce json
 // @Param uid path integer true "User ID"
 // @Success 200
-// @Router /user/{uid}/allBoard [get]
+// @Router /board/{uid}/allBoard [get]
 func (c *boardController) GetByUserID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	strUID := chi.URLParam(r, "uid")

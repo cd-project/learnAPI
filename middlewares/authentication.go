@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"log"
 	"strings"
 	"time"
 	"todo/infrastructure"
@@ -25,6 +26,7 @@ func GetTokenString(user *model.User) (string, string, error) {
 	jwtauth.SetExpiry(claim, time.Now().Local().Add(time.Hour*time.Duration(infrastructure.GetExtendAccessHour())))
 	jwtauth.SetExpiry(refreshClaim, time.Now().Local().Add(time.Hour*time.Duration(infrastructure.GetExtendRefreshHour())))
 	_, tokenString, _ := infrastructure.GetEncodeAuth().Encode(claim)
+	log.Println(tokenString)
 	_, refreshToken, _ := infrastructure.GetEncodeAuth().Encode(refreshClaim)
 	tokenString = "Bearer " + tokenString
 	refreshToken = "Bearer " + refreshToken

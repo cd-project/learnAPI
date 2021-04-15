@@ -42,6 +42,7 @@ var (
 	dbName     string
 
 	encodeAuth *jwtauth.JWTAuth
+	decodeAuth *jwtauth.JWTAuth
 	privateKey *rsa.PrivateKey
 	publicKey  interface{}
 
@@ -62,6 +63,9 @@ func loadParameters() {
 	dbUser = "postgres"
 	dbPassword = "0000" // My password
 	dbName = "learnAPI"
+	extendHour = 72
+	extendHourRefresh = 1440
+
 }
 
 func openConnection() (*gorm.DB, error) {

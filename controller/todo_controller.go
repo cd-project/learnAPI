@@ -62,7 +62,7 @@ func (c *todoController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetAll gets all Todos
-// @tag todo-manager-apis
+// @tags todo-manager-apis
 // @Summary Get all Todos
 // @Description Get all Todos
 // @Accept json
@@ -86,7 +86,7 @@ func (c *todoController) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetByID gets todo by its ID
-// @tag todo-manager-apis
+// @tags todo-manager-apis
 // @Summary gets todo by its ID
 // @Description gets todo by its ID
 // @Accept json
@@ -122,7 +122,7 @@ func (c *todoController) GetByID(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update updates information of TodoID
-// @tag todo-manager-apis
+// @tags todo-manager-apis
 // @Summary Update an ID specified Todo
 // @Description Update an ID specified Todo
 // @Accept json
@@ -160,7 +160,7 @@ func (c *todoController) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete deletes an ID specified Todo
-// @tag todo-manager-apis
+// @tags todo-manager-apis
 // @Summary Delete a Todo
 // @Description Delete a Todo with an ID specified
 // @Accept json

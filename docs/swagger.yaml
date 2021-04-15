@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  controller.LoginPayload:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   model.Board:
     properties:
       description:
@@ -10,6 +17,32 @@ definitions:
         type: integer
       title:
         type: string
+    type: object
+  model.LoginResponse:
+    properties:
+      code:
+        type: string
+      data:
+        type: object
+      message:
+        type: string
+      refreshToken:
+        type: string
+      success:
+        type: boolean
+      token:
+        type: string
+    type: object
+  model.Response:
+    properties:
+      code:
+        type: string
+      data:
+        type: object
+      message:
+        type: string
+      success:
+        type: boolean
     type: object
   model.Todo:
     properties:
@@ -23,6 +56,15 @@ definitions:
       id:
         type: integer
       title:
+        type: string
+    type: object
+  model.UserPayload:
+    properties:
+      password:
+        type: string
+      role:
+        type: string
+      username:
         type: string
     type: object
 host: localhost:8080
@@ -54,6 +96,52 @@ paths:
         "200":
           description: ""
       summary: get board updated with new data
+      tags:
+      - board-manager-apis
+  /board/{uid}/allBoard:
+    get:
+      consumes:
+      - application/json
+      description: gets all board belong to UserID
+      parameters:
+      - description: User ID
+        in: path
+        name: uid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: gets all board belong to UserID
+      tags:
+      - board-manager-apis
+  /board/{uid}/create:
+    post:
+      consumes:
+      - application/json
+      description: create a new board with given model
+      parameters:
+      - description: Owner of this board
+        in: path
+        name: uid
+        required: true
+        type: integer
+      - description: Board information
+        in: body
+        name: BoardInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.Board'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: create new Board with given model
+      tags:
+      - board-manager-apis
   /board/delete/{boardid}:
     delete:
       consumes:
@@ -71,6 +159,8 @@ paths:
         "200":
           description: ""
       summary: Board with boardID will be deleted
+      tags:
+      - board-manager-apis
   /sys/allBoard:
     get:
       consumes:
@@ -104,11 +194,11 @@ paths:
       summary: filtered data will be shown
       tags:
       - board-manager-apis
-  /user/{uid}/allBoard:
+  /user/{uid}:
     get:
       consumes:
       - application/json
-      description: gets all board belong to UserID
+      description: gets user info
       parameters:
       - description: User ID
         in: path
@@ -119,31 +209,93 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
-      summary: gets all board belong to UserID
-  /user/{uid}/board/create:
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: gets user info
+      tags:
+      - user-manager-apis
+  /user/all:
+    get:
+      consumes:
+      - application/json
+      description: get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: get all users
+      tags:
+      - user-manager-apis
+  /user/create:
     post:
       consumes:
       - application/json
-      description: create a new board with given model
+      description: creates new user
       parameters:
-      - description: Owner of this board
-        in: path
-        name: uid
-        required: true
-        type: integer
-      - description: Board information
+      - description: User information
         in: body
-        name: BoardInfo
+        name: UserInfo
         required: true
         schema:
-          $ref: '#/definitions/model.Board'
+          $ref: '#/definitions/model.UserPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: creates new user
+      tags:
+      - user-manager-apis
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: log user in
+      parameters:
+      - description: username & password
+        in: body
+        name: LoginPayload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.LoginPayload'
       produces:
       - application/json
       responses:
         "200":
           description: ""
-      summary: create new Board with given model
+      summary: log user in
+      tags:
+      - user-manager-apis
+  /user/login/token:
+    post:
+      consumes:
+      - application/json
+      description: login user
+      parameters:
+      - description: Username & Password
+        in: body
+        name: LoginPayload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.LoginPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginResponse'
+      summary: login user
+      tags:
+      - user-manager-apis
   /work/all:
     get:
       consumes:
@@ -155,6 +307,8 @@ paths:
         "200":
           description: ""
       summary: Get all Todos
+      tags:
+      - todo-manager-apis
   /work/create:
     post:
       consumes:
@@ -192,6 +346,8 @@ paths:
         "200":
           description: ""
       summary: Delete a Todo
+      tags:
+      - todo-manager-apis
   /work/search/{id}:
     get:
       consumes:
@@ -209,6 +365,8 @@ paths:
         "200":
           description: ""
       summary: gets todo by its ID
+      tags:
+      - todo-manager-apis
   /work/updater/{id}:
     put:
       consumes:
@@ -232,4 +390,6 @@ paths:
         "200":
           description: ""
       summary: Update an ID specified Todo
+      tags:
+      - todo-manager-apis
 swagger: "2.0"

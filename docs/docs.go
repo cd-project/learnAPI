@@ -33,6 +33,9 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "board-manager-apis"
+                ],
                 "summary": "Board with boardID will be deleted",
                 "parameters": [
                     {
@@ -59,6 +62,9 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "board-manager-apis"
+                ],
                 "summary": "get board updated with new data",
                 "parameters": [
                     {
@@ -71,6 +77,73 @@ var doc = `{
                     {
                         "description": "Update content",
                         "name": "UpdateContent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Board"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/board/{uid}/allBoard": {
+            "get": {
+                "description": "gets all board belong to UserID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "board-manager-apis"
+                ],
+                "summary": "gets all board belong to UserID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/board/{uid}/create": {
+            "post": {
+                "description": "create a new board with given model",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "board-manager-apis"
+                ],
+                "summary": "create new Board with given model",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Owner of this board",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Board information",
+                        "name": "BoardInfo",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -133,16 +206,146 @@ var doc = `{
                 }
             }
         },
-        "/user/{uid}/allBoard": {
+        "/user/all": {
             "get": {
-                "description": "gets all board belong to UserID",
+                "description": "get all users",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "gets all board belong to UserID",
+                "tags": [
+                    "user-manager-apis"
+                ],
+                "summary": "get all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "creates new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-manager-apis"
+                ],
+                "summary": "creates new user",
+                "parameters": [
+                    {
+                        "description": "User information",
+                        "name": "UserInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "log user in",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-manager-apis"
+                ],
+                "summary": "log user in",
+                "parameters": [
+                    {
+                        "description": "username \u0026 password",
+                        "name": "LoginPayload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.LoginPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/login/token": {
+            "post": {
+                "description": "login user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-manager-apis"
+                ],
+                "summary": "login user",
+                "parameters": [
+                    {
+                        "description": "Username \u0026 Password",
+                        "name": "LoginPayload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.LoginPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{uid}": {
+            "get": {
+                "description": "gets user info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-manager-apis"
+                ],
+                "summary": "gets user info",
                 "parameters": [
                     {
                         "type": "integer",
@@ -154,42 +357,10 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/user/{uid}/board/create": {
-            "post": {
-                "description": "create a new board with given model",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "create new Board with given model",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Owner of this board",
-                        "name": "uid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Board information",
-                        "name": "BoardInfo",
-                        "in": "body",
-                        "required": true,
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Board"
+                            "$ref": "#/definitions/model.Response"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
                     }
                 }
             }
@@ -202,6 +373,9 @@ var doc = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "todo-manager-apis"
                 ],
                 "summary": "Get all Todos",
                 "responses": {
@@ -251,6 +425,9 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "todo-manager-apis"
+                ],
                 "summary": "Delete a Todo",
                 "parameters": [
                     {
@@ -277,6 +454,9 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "todo-manager-apis"
+                ],
                 "summary": "gets todo by its ID",
                 "parameters": [
                     {
@@ -302,6 +482,9 @@ var doc = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "todo-manager-apis"
                 ],
                 "summary": "Update an ID specified Todo",
                 "parameters": [
@@ -331,6 +514,17 @@ var doc = `{
         }
     },
     "definitions": {
+        "controller.LoginPayload": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Board": {
             "type": "object",
             "properties": {
@@ -345,6 +539,46 @@ var doc = `{
                 },
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "model.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
                 }
             }
         },
@@ -365,6 +599,20 @@ var doc = `{
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserPayload": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

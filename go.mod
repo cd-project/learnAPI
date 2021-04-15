@@ -19,6 +19,7 @@ require (
 	github.com/go-openapi/validate v0.20.2 // indirect
 	github.com/goccy/go-json v0.4.11 // indirect
 	github.com/gorilla/mux v1.8.0
+	github.com/harlow/authtoken v0.0.0-20151218063325-ef4b3666db99 // indirect
 	github.com/jessevdk/go-flags v1.5.0 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jinzhu/now v1.1.2 // indirect
