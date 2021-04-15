@@ -122,13 +122,14 @@ func (s *userService) LoginRequest(username, password string) (*model.User, stri
 	if err != nil {
 		return nil, "", "", err
 	}
-
+	// err getting JWT
 	// Get JWT
 	tokenString, refreshToken, err := middleware.GetTokenString(user)
 	if err != nil {
 		infrastructure.ErrLog.Printf("Problem with LoginRequest by Authentication: %v/n", err)
 		return nil, "", "", err
 	}
+	//
 	return user, tokenString, refreshToken, nil
 
 }
@@ -169,28 +170,35 @@ func (s *userService) CheckCredential(id int, password string) (*model.User, err
 		return nil, err
 	}
 	if !comparePassword(user.Password, password) {
-		return nil, errors.New("incorrect password")
+		return nil, errors.New("incorrect password from service/check credential!")
 	}
 	return user, nil
 }
 
 func (s *userService) checkPassword(user *model.User, password string) error {
+	// check password: hashed one.
+	// compare: hashed, plain
 	if !comparePassword(user.Password, password) {
-		return errors.New("incorrect password")
+		return errors.New("incorrect password from service/checkPassword")
 	}
 
 	return nil
 }
 
 func hashAndSalt(password string) string {
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	hashedPwd, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error() + "/service/hashAndSalt")
 	}
-	return string(hash)
+	log.Println("hashedPwd is:", string(hashedPwd))
+	return string(hashedPwd)
 }
 
 func comparePassword(hashedPwd string, plainPwd string) bool {
+	// cmphashandpass : true ~ nil.
+	log.Println("Login session:")
+	log.Println("hashpwd: ", hashedPwd)
+	log.Println("plainpwd: ", plainPwd)
 	if err := bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(plainPwd)); err != nil {
 		return false
 	}

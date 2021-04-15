@@ -19,6 +19,7 @@ func GetTokenString(user *model.User) (string, string, error) {
 		"role":     user.Role,
 	}
 
+	log.Println(user)
 	refreshClaim := jwt.MapClaims{
 		"id": user.ID,
 	}
@@ -26,8 +27,8 @@ func GetTokenString(user *model.User) (string, string, error) {
 	jwtauth.SetExpiry(claim, time.Now().Local().Add(time.Hour*time.Duration(infrastructure.GetExtendAccessHour())))
 	jwtauth.SetExpiry(refreshClaim, time.Now().Local().Add(time.Hour*time.Duration(infrastructure.GetExtendRefreshHour())))
 	_, tokenString, _ := infrastructure.GetEncodeAuth().Encode(claim)
-	log.Println(tokenString)
 	_, refreshToken, _ := infrastructure.GetEncodeAuth().Encode(refreshClaim)
+	log.Println(tokenString)
 	tokenString = "Bearer " + tokenString
 	refreshToken = "Bearer " + refreshToken
 	return tokenString, refreshToken, nil

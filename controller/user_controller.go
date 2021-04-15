@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"todo/infrastructure"
@@ -204,11 +205,12 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	// loginDetail model valid.
 	user, token, refreshToken, err := c.userService.LoginRequest(loginDetail.Username, loginDetail.Password)
 	if err != nil {
+		log.Println(err)
 		jsonResponse = &model.LoginResponse{
 			Token:        token,
 			RefreshToken: refreshToken,
 			Data:         nil,
-			Message:      "Invalid Credentials",
+			Message:      "Invalid Credentials" + err.Error(),
 			Code:         "400",
 			Success:      false,
 		}
@@ -242,9 +244,10 @@ func (c *userController) LoginWithToken(w http.ResponseWriter, r *http.Request) 
 	var jsonResponse *model.LoginResponse
 
 	token, err := authtoken.FromRequest(r)
+	log.Println(token)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		http.Error(w, http.StatusText(401), 401)
+		// http.Error(w, http.StatusText(401), 401)
 		return
 	}
 

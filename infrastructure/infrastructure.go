@@ -65,7 +65,8 @@ func loadParameters() {
 	dbName = "learnAPI"
 	extendHour = 72
 	extendHourRefresh = 1440
-
+	rsaPublicPath = "./infrastructure/public_key.pem"
+	rsaPrivatePath = "./infrastructure/private_key.pem"
 }
 
 func openConnection() (*gorm.DB, error) {
@@ -113,6 +114,9 @@ func init() {
 	loadParameters()
 	// init database
 	InitDatabase()
+	if err := loadAuthToken(); err != nil {
+		ErrLog.Println(err)
+	}
 }
 
 // GetDB export db

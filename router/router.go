@@ -5,10 +5,12 @@ import (
 	"net/http"
 	"os"
 	"todo/controller"
+	"todo/infrastructure"
 
 	_ "todo/docs"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
@@ -29,6 +31,33 @@ func Router() http.Handler {
 	myRouter.Get("/swagger/*", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
 	))
+	// Middleware routing
+	myRouter.Route("/", func(router chi.Router) {
+		// public routes
+		myRouter.Post("/user/login", userController.Login)
+		myRouter.Post("/user/login/token", userController.LoginWithToken)
+		router.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("pong"))
+		})
+
+		// protected route
+		router.Group(func(protectedRoute chi.Router) {
+			// Middleware authentication
+			protectedRoute.Use(jwtauth.Verifier(infrastructure.GetEncodeAuth()))
+			protectedRoute.Use(jwtauth.Authenticator)
+
+			// Todo table
+			protectedRoute.Route("/work", func(subRouter chi.Router) {
+				subRouter.Post("/create", todoController.Create)
+				subRouter.Get("/search/{id}", todoController.GetByID)
+				subRouter.Put("/updater/{id}", todoController.Update)
+				subRouter.Delete("/delete/{id}", todoController.Delete)
+			})
+		})
+
+	})
+
+	// protected route
 
 	// Routers for TODOS table
 	myRouter.Post("/work/create", todoController.Create)
