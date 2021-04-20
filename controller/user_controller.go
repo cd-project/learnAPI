@@ -42,6 +42,7 @@ func (c *userController) GetAll(w http.ResponseWriter, r *http.Request) {
 	var jsonResponse *model.Response
 	users, err := c.userService.GetAll()
 	if err != nil {
+		log.Println(err.Error())
 		jsonResponse = &model.Response{
 			Data:    nil,
 			Message: err.Error(),
@@ -205,12 +206,11 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	// loginDetail model valid.
 	user, token, refreshToken, err := c.userService.LoginRequest(loginDetail.Username, loginDetail.Password)
 	if err != nil {
-		log.Println(err)
 		jsonResponse = &model.LoginResponse{
 			Token:        token,
 			RefreshToken: refreshToken,
 			Data:         nil,
-			Message:      "Invalid Credentials" + err.Error(),
+			Message:      "Invalid Credentials, " + err.Error(),
 			Code:         "400",
 			Success:      false,
 		}
@@ -223,7 +223,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 				Username: user.Username,
 				Role:     user.Role,
 			},
-			Message: "Login successful",
+			Message: "Login successful " + user.Role,
 			Code:    "200",
 			Success: true,
 		}
@@ -234,10 +234,9 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 // LoginWithToken provides token each login attempt
 // @tags user-manager-apis
 // @Summary login user
-// @Description login user
+// @Description login user, return new token string jwt
 // @Accept json
 // @Produce json
-// @Param LoginPayload body controller.LoginPayload true "Username & Password"
 // @Success 200 {object} model.LoginResponse
 // @Router /user/login/token [post]
 func (c *userController) LoginWithToken(w http.ResponseWriter, r *http.Request) {

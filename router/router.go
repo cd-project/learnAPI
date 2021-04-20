@@ -1,9 +1,7 @@
 package router
 
 import (
-	"log"
 	"net/http"
-	"os"
 	"todo/controller"
 	"todo/infrastructure"
 
@@ -12,11 +10,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth"
 	httpSwagger "github.com/swaggo/http-swagger"
-)
-
-var (
-	infoLog = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-	errLog  = log.New(os.Stderr, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 )
 
 func Router() http.Handler {
@@ -36,6 +29,7 @@ func Router() http.Handler {
 		// public routes
 		myRouter.Post("/user/login", userController.Login)
 		myRouter.Post("/user/login/token", userController.LoginWithToken)
+		myRouter.Post("/user/create", userController.CreateUser)
 		router.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("pong"))
 		})
@@ -52,35 +46,29 @@ func Router() http.Handler {
 				subRouter.Get("/search/{id}", todoController.GetByID)
 				subRouter.Put("/updater/{id}", todoController.Update)
 				subRouter.Delete("/delete/{id}", todoController.Delete)
+				subRouter.Get("/all", todoController.GetAll)
+			})
+
+			// Board table
+			protectedRoute.Route("/board", func(subRouter chi.Router) {
+				subRouter.Post("/{uid}/create", boardController.CreateBoard)
+				subRouter.Put("/{boardid}/update", boardController.UpdateBoard)
+				subRouter.Delete("/delete/{boardid}", boardController.DeleteBoard)
+				subRouter.Get("/{uid}/allBoard", boardController.GetByUserID)
+				subRouter.Get("/allBoard", boardController.GetAllBoard)
+				subRouter.Put("/filter", boardController.Filter)
+			})
+
+			// User table
+			protectedRoute.Route("/user", func(subRouter chi.Router) {
+				subRouter.Get("/all", userController.GetAll)
+				subRouter.Get("/{uid}", userController.GetByID)
+				subRouter.Put("/{uid}/modify/pwd", userController.ChangePassword)
+				subRouter.Put("/{uid}/modify/role", userController.ChangeRole)
 			})
 		})
 
 	})
 
-	// protected route
-
-	// Routers for TODOS table
-	myRouter.Post("/work/create", todoController.Create)
-	myRouter.Get("/work/all", todoController.GetAll)
-	myRouter.Get("/work/search/{id}", todoController.GetByID)
-	myRouter.Put("/work/updater/{id}", todoController.Update)
-	myRouter.Delete("/work/delete/{id}", todoController.Delete)
-
-	// Routers for BOARD table
-	myRouter.Post("/board/{uid}/create", boardController.CreateBoard)
-	myRouter.Put("/board/{boardid}/update", boardController.UpdateBoard)
-	myRouter.Delete("/board/delete/{boardid}", boardController.DeleteBoard)
-	myRouter.Get("/board/{uid}/allBoard", boardController.GetByUserID)
-	myRouter.Get("/sys/allBoard", boardController.GetAllBoard)
-	myRouter.Put("/sys/filter", boardController.Filter)
-
-	// Routers for USER table
-	myRouter.Get("/user/all", userController.GetAll)
-	myRouter.Post("/user/create", userController.CreateUser)
-	myRouter.Get("/user/{uid}", userController.GetByID)
-	myRouter.Put("/user/{uid}/modify/pwd", userController.ChangePassword)
-	myRouter.Put("/user/{uid}/modify/role", userController.ChangeRole)
-	myRouter.Post("/user/login", userController.Login)
-	myRouter.Post("/user/login/token", userController.LoginWithToken)
 	return myRouter
 }

@@ -170,7 +170,7 @@ func (s *userService) CheckCredential(id int, password string) (*model.User, err
 		return nil, err
 	}
 	if !comparePassword(user.Password, password) {
-		return nil, errors.New("incorrect password from service/check credential!")
+		return nil, errors.New("incorrect password from service/check credential")
 	}
 	return user, nil
 }

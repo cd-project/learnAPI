@@ -301,7 +301,7 @@ var doc = `{
         },
         "/user/login/token": {
             "post": {
-                "description": "login user",
+                "description": "login user, return new token string jwt",
                 "consumes": [
                     "application/json"
                 ],
@@ -312,17 +312,6 @@ var doc = `{
                     "user-manager-apis"
                 ],
                 "summary": "login user",
-                "parameters": [
-                    {
-                        "description": "Username \u0026 Password",
-                        "name": "LoginPayload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controller.LoginPayload"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",

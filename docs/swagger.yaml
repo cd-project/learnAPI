@@ -278,14 +278,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: login user
-      parameters:
-      - description: Username & Password
-        in: body
-        name: LoginPayload
-        required: true
-        schema:
-          $ref: '#/definitions/controller.LoginPayload'
+      description: login user, return new token string jwt
       produces:
       - application/json
       responses:

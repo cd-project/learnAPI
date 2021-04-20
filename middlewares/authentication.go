@@ -28,7 +28,6 @@ func GetTokenString(user *model.User) (string, string, error) {
 	jwtauth.SetExpiry(refreshClaim, time.Now().Local().Add(time.Hour*time.Duration(infrastructure.GetExtendRefreshHour())))
 	_, tokenString, _ := infrastructure.GetEncodeAuth().Encode(claim)
 	_, refreshToken, _ := infrastructure.GetEncodeAuth().Encode(refreshClaim)
-	log.Println(tokenString)
 	tokenString = "Bearer " + tokenString
 	refreshToken = "Bearer " + refreshToken
 	return tokenString, refreshToken, nil
