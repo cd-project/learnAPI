@@ -63,8 +63,10 @@ func Router() http.Handler {
 			protectedRoute.Route("/user", func(subRouter chi.Router) {
 				subRouter.Get("/all", userController.GetAll)
 				subRouter.Get("/{uid}", userController.GetByID)
-				subRouter.Put("/{uid}/modify/pwd", userController.ChangePassword)
-				subRouter.Put("/{uid}/modify/role", userController.ChangeRole)
+				subRouter.Put("/modify/pwd", userController.ChangePassword)
+				subRouter.Put("/modify/role", userController.ChangeRole)
+				subRouter.Put("/reset/{uid}", userController.ResetPassword)
+				subRouter.Delete("/delete/{uid}", userController.DeleteUser)
 			})
 		})
 

@@ -26,6 +26,11 @@ var doc = `{
     "paths": {
         "/board/delete/{boardid}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Board with boardID will be deleted",
                 "consumes": [
                     "application/json"
@@ -55,6 +60,11 @@ var doc = `{
         },
         "/board/{boardid}/update": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "given new data and id, update board",
                 "consumes": [
                     "application/json"
@@ -93,6 +103,11 @@ var doc = `{
         },
         "/board/{uid}/allBoard": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "gets all board belong to UserID",
                 "consumes": [
                     "application/json"
@@ -122,6 +137,11 @@ var doc = `{
         },
         "/board/{uid}/create": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "create a new board with given model",
                 "consumes": [
                     "application/json"
@@ -160,6 +180,11 @@ var doc = `{
         },
         "/sys/allBoard": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get all boards",
                 "consumes": [
                     "application/json"
@@ -180,8 +205,16 @@ var doc = `{
         },
         "/sys/filter": {
             "put": {
-                "description": "board db will be filtered using given model\njson",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "board db will be filtered using given model",
                 "consumes": [
+                    "application/json"
+                ],
+                "produces": [
                     "application/json"
                 ],
                 "tags": [
@@ -208,6 +241,11 @@ var doc = `{
         },
         "/user/all": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get all users",
                 "consumes": [
                     "application/json"
@@ -256,6 +294,43 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/model.UserPayload"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/delete/{uid}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "delete user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-manager-apis"
+                ],
+                "summary": "delete user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -322,8 +397,125 @@ var doc = `{
                 }
             }
         },
+        "/user/modify/pwd": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "change password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-manager-apis"
+                ],
+                "summary": "change password",
+                "parameters": [
+                    {
+                        "description": "User and password info",
+                        "name": "UserPasswordInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UserPasswordPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/modify/role": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "change role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-manager-apis"
+                ],
+                "summary": "change role",
+                "parameters": [
+                    {
+                        "description": "UserID and role",
+                        "name": "UserRoleInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UserRolePayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/reset/{uid}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "reset password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-manager-apis"
+                ],
+                "summary": "reset password",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/user/{uid}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "gets user info",
                 "consumes": [
                     "application/json"
@@ -356,6 +548,11 @@ var doc = `{
         },
         "/work/all": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get all Todos",
                 "consumes": [
                     "application/json"
@@ -376,6 +573,11 @@ var doc = `{
         },
         "/work/create": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create new Todo",
                 "consumes": [
                     "application/json"
@@ -407,6 +609,11 @@ var doc = `{
         },
         "/work/delete/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete a Todo with an ID specified",
                 "consumes": [
                     "application/json"
@@ -436,6 +643,11 @@ var doc = `{
         },
         "/work/search/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "gets todo by its ID",
                 "consumes": [
                     "application/json"
@@ -465,6 +677,11 @@ var doc = `{
         },
         "/work/updater/{id}": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update an ID specified Todo",
                 "consumes": [
                     "application/json"
@@ -511,6 +728,31 @@ var doc = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "controller.UserPasswordPayload": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controller.UserRolePayload": {
+            "type": "object",
+            "properties": {
+                "newRole": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
                 }
             }
         },
@@ -605,6 +847,13 @@ var doc = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

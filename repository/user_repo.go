@@ -78,7 +78,7 @@ func (r *userRepository) ChangeRole(id int, newRole string) (*model.User, error)
 func (r *userRepository) DeleteUser(id int) error {
 	db := infrastructure.GetDB()
 
-	if err := db.Table("users").Delete("id", id).Error; err != nil {
+	if err := db.Debug().Exec("DELETE FROM users WHERE id = ?", id).Error; err != nil {
 		return err
 	}
 

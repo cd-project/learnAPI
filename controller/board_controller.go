@@ -30,6 +30,7 @@ type boardController struct {
 // @Description create a new board with given model
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param uid path integer true "Owner of this board"
 // @Param BoardInfo body model.Board true "Board information"
 // @Success 200
@@ -71,6 +72,7 @@ func (c *boardController) CreateBoard(w http.ResponseWriter, r *http.Request) {
 // @Description given new data and id, update board
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param boardid path integer true "ID of the to be updated board"
 // @Param UpdateContent body model.Board true "Update content"
 // @Success 200
@@ -109,6 +111,7 @@ func (c *boardController) UpdateBoard(w http.ResponseWriter, r *http.Request) {
 // @Description Board with boardID will be deleted
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param boardid path integer true "ID of the to be deleted board"
 // @Success 200
 // @Router /board/delete/{boardid} [delete]
@@ -131,6 +134,7 @@ func (c *boardController) DeleteBoard(w http.ResponseWriter, r *http.Request) {
 // @Description gets all board belong to UserID
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param uid path integer true "User ID"
 // @Success 200
 // @Router /board/{uid}/allBoard [get]
@@ -158,6 +162,7 @@ func (c *boardController) GetByUserID(w http.ResponseWriter, r *http.Request) {
 // @Description get all boards
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Success 200
 // @Router /sys/allBoard [get]
 func (c *boardController) GetAllBoard(w http.ResponseWriter, r *http.Request) {
@@ -179,7 +184,8 @@ func (c *boardController) GetAllBoard(w http.ResponseWriter, r *http.Request) {
 // @Summary filtered data will be shown
 // @Description board db will be filtered using given model
 // @Accept json
-// @Description json
+// @Produce json
+// @Security ApiKeyAuth
 // @Param FilterContent body model.Board true "Filter Content"
 // @Success 200
 // @Router /sys/filter [put]

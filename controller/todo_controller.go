@@ -29,6 +29,7 @@ type todoController struct {
 // @Description Create new Todo
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param TodoInfo body model.Todo true "Todo information"
 // @Success 200
 // @Router /work/create [post]
@@ -67,6 +68,7 @@ func (c *todoController) Create(w http.ResponseWriter, r *http.Request) {
 // @Description Get all Todos
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Success 200
 // @Router /work/all [get]
 func (c *todoController) GetAll(w http.ResponseWriter, r *http.Request) {
@@ -91,6 +93,7 @@ func (c *todoController) GetAll(w http.ResponseWriter, r *http.Request) {
 // @Description gets todo by its ID
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path integer true "ID of needed todo"
 // @Success 200
 // @Router /work/search/{id} [get]
@@ -127,6 +130,7 @@ func (c *todoController) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Description Update an ID specified Todo
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path integer true "ID of the to be updated Todo"
 // @Param UpdateContent body model.Todo true "UpdateContent information"
 // @Success 200
@@ -165,6 +169,7 @@ func (c *todoController) Update(w http.ResponseWriter, r *http.Request) {
 // @Description Delete a Todo with an ID specified
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id path integer true "ID of the to be deleted Todo"
 // @Success 200
 // @Router /work/delete/{id} [delete]

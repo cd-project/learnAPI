@@ -37,7 +37,7 @@ func loadAuthToken() error {
 	// signKey = privateKey
 	// verifyKey = publicKey
 	encodeAuth = jwtauth.New(Algorithm, privateKey, publicKey)
-	//decodeAuth = jwtauth.New(Algorithm, nil, publicKey)
+	decodeAuth = jwtauth.New(Algorithm, nil, publicKey)
 
 	return nil
 }

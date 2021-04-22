@@ -21,7 +21,7 @@ type UserController interface {
 	ChangePassword(w http.ResponseWriter, r *http.Request)
 	ChangeRole(w http.ResponseWriter, r *http.Request)
 	ResetPassword(w http.ResponseWriter, r *http.Request)
-	Delete(w http.ResponseWriter, r *http.Request)
+	DeleteUser(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 	LoginWithToken(w http.ResponseWriter, r *http.Request)
 }
@@ -36,6 +36,7 @@ type userController struct {
 // @Description get all users
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Success 200 {object} model.Response
 // @Router /user/all [get]
 func (c *userController) GetAll(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +67,7 @@ func (c *userController) GetAll(w http.ResponseWriter, r *http.Request) {
 // @Description gets user info
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param uid path integer true "User ID"
 // @Success 200 {object} model.Response
 // @Router /user/{uid} [get]
@@ -156,23 +158,218 @@ func (c *userController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, jsonResponse)
 }
 
+// ChangePassword changes password of user with UID
+// @tags user-manager-apis
+// @Summary change password
+// @Description change password
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param UserPasswordInfo body controller.UserPasswordPayload true "User and password info"
+// @Success 200 {object} model.Response
+// @Router /user/modify/pwd [put]
 func (c *userController) ChangePassword(w http.ResponseWriter, r *http.Request) {
-	// // just change password, what's so difference?
-	// strID := chi.URLParam(r, "uid")
-	// uid, _ := strconv.Atoi(strID)
-	panic("")
+	var jsonResponse *model.Response
+	var data UserPasswordPayload
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&data); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, http.StatusText(400), 400)
+
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: "Bad Request",
+			Code:    "400",
+			Success: false,
+		}
+		render.JSON(w, r, jsonResponse)
+		return
+	}
+
+	userResponse, err := c.userService.ChangePassword(data.UserID, data.NewPassword, data.OldPassword)
+	if data.NewPassword == data.OldPassword {
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: "New password cannot be the same as old password. Please choose another password!",
+			Code:    "400",
+			Success: false,
+		}
+		render.JSON(w, r, jsonResponse)
+		return
+	}
+	if err != nil {
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: "failed!" + err.Error(),
+			Code:    "200",
+			Success: false,
+		}
+	} else {
+		jsonResponse = &model.Response{
+			Data:    userResponse,
+			Message: "Password change successfully!",
+			Code:    "400",
+			Success: true,
+		}
+	}
+	render.JSON(w, r, jsonResponse)
+
 }
 
+// ChangeRole changes role of user with UID
+// @tags user-manager-apis
+// @Summary change role
+// @Description change role
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param UserRoleInfo body controller.UserRolePayload true "UserID and role"
+// @Success 200
+// @Router /user/modify/role [put]
 func (c *userController) ChangeRole(w http.ResponseWriter, r *http.Request) {
-	panic("")
+	var jsonResponse *model.Response
+	var data UserRolePayload
+
+	decoder := json.NewDecoder(r.Body)
+	// bad request
+	if err := decoder.Decode(&data); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, http.StatusText(400), 400)
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: "Bad Request",
+			Code:    "400",
+			Success: false,
+		}
+		render.JSON(w, r, jsonResponse)
+		return
+	}
+
+	// request valid, check for same role
+	if userdata, err := c.userService.GetByID(data.UserID); userdata.Role == data.NewRole && err == nil {
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: "New role cannot be the same as old role. Please choose another role!",
+			Code:    "200",
+			Success: false,
+		}
+		render.JSON(w, r, jsonResponse)
+		return
+	}
+	// valid NewRole
+	userResponse, err := c.userService.ChangeRole(data.UserID, data.NewRole)
+	if err != nil {
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: err.Error(),
+			Code:    "200",
+			Success: false,
+		}
+	} else {
+		jsonResponse = &model.Response{
+			Data:    userResponse,
+			Message: "Role changed. Your new role is: " + data.NewRole,
+			Code:    "200",
+			Success: true,
+		}
+	}
+	render.JSON(w, r, jsonResponse)
+
 }
 
+// ResetPassword resets password of user with UID
+// @tags user-manager-apis
+// @Summary reset password
+// @Description reset password
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param uid path integer true "User ID"
+// @Success 200 {object} model.Response
+// @Router /user/reset/{uid} [put]
 func (c *userController) ResetPassword(w http.ResponseWriter, r *http.Request) {
-	panic("")
+	var jsonResponse *model.Response
+
+	strID := chi.URLParam(r, "uid")
+	uid, err := strconv.Atoi(strID)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		http.Error(w, http.StatusText(404), 404)
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: "Bad URL",
+			Code:    "404",
+			Success: false,
+		}
+		render.JSON(w, r, jsonResponse)
+		return
+	}
+
+	// get userID from URL done, validate user
+	userData, err := c.userService.ResetPassword(uid)
+	if err != nil {
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: err.Error(),
+			Code:    "200",
+			Success: false,
+		}
+	} else {
+		jsonResponse = &model.Response{
+			Data:    userData,
+			Message: "Reset password successfully. Your new password is 0000.",
+			Code:    "200",
+			Success: true,
+		}
+	}
+	render.JSON(w, r, jsonResponse)
 }
 
-func (c *userController) Delete(w http.ResponseWriter, r *http.Request) {
-	panic("")
+// DeleteUser deletes user with UserID
+// @tags user-manager-apis
+// @Summary delete user
+// @Description delete user
+// @Accept json
+// @Produce json
+// @Param uid path integer true "User ID"
+// @Security ApiKeyAuth
+// @Success 200 {object} model.Response
+// @Router /user/delete/{uid} [delete]
+func (c *userController) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	var jsonResponse *model.Response
+
+	strID := chi.URLParam(r, "uid")
+	uid, err := strconv.Atoi(strID)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		http.Error(w, http.StatusText(404), 404)
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: "Bad URL",
+			Code:    "404",
+			Success: false,
+		}
+		render.JSON(w, r, jsonResponse)
+		return
+	}
+
+	// get UserID from URL done, deleteUser
+	if err := c.userService.DeleteUser(uid); err != nil {
+		jsonResponse = &model.Response{
+			Data:    nil,
+			Message: err.Error(),
+			Code:    "200",
+			Success: false,
+		}
+	} else {
+		jsonResponse = &model.Response{
+			Message: "User successfully deleted!",
+			Code:    "200",
+			Success: true,
+		}
+	}
+	render.JSON(w, r, jsonResponse)
 }
 
 // Login log user in if they have valid credential
@@ -291,4 +488,15 @@ func NewUserController() UserController {
 type LoginPayload struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type UserPasswordPayload struct {
+	UserID      int    `json:"userID"`
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
+}
+
+type UserRolePayload struct {
+	UserID  int    `json:"userID"`
+	NewRole string `json:"newRole"`
 }

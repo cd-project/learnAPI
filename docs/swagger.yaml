@@ -7,6 +7,22 @@ definitions:
       username:
         type: string
     type: object
+  controller.UserPasswordPayload:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+      userID:
+        type: integer
+    type: object
+  controller.UserRolePayload:
+    properties:
+      newRole:
+        type: string
+      userID:
+        type: integer
+    type: object
   model.Board:
     properties:
       description:
@@ -95,6 +111,8 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: get board updated with new data
       tags:
       - board-manager-apis
@@ -114,6 +132,8 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: gets all board belong to UserID
       tags:
       - board-manager-apis
@@ -139,6 +159,8 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: create new Board with given model
       tags:
       - board-manager-apis
@@ -158,6 +180,8 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: Board with boardID will be deleted
       tags:
       - board-manager-apis
@@ -171,6 +195,8 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: get all boards
       tags:
       - board-manager-apis
@@ -178,9 +204,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: |-
-        board db will be filtered using given model
-        json
+      description: board db will be filtered using given model
       parameters:
       - description: Filter Content
         in: body
@@ -188,9 +212,13 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.Board'
+      produces:
+      - application/json
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: filtered data will be shown
       tags:
       - board-manager-apis
@@ -212,6 +240,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.Response'
+      security:
+      - ApiKeyAuth: []
       summary: gets user info
       tags:
       - user-manager-apis
@@ -227,6 +257,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.Response'
+      security:
+      - ApiKeyAuth: []
       summary: get all users
       tags:
       - user-manager-apis
@@ -252,6 +284,29 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: creates new user
+      tags:
+      - user-manager-apis
+  /user/delete/{uid}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user
+      parameters:
+      - description: User ID
+        in: path
+        name: uid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: delete user
       tags:
       - user-manager-apis
   /user/login:
@@ -289,6 +344,75 @@ paths:
       summary: login user
       tags:
       - user-manager-apis
+  /user/modify/pwd:
+    put:
+      consumes:
+      - application/json
+      description: change password
+      parameters:
+      - description: User and password info
+        in: body
+        name: UserPasswordInfo
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UserPasswordPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: change password
+      tags:
+      - user-manager-apis
+  /user/modify/role:
+    put:
+      consumes:
+      - application/json
+      description: change role
+      parameters:
+      - description: UserID and role
+        in: body
+        name: UserRoleInfo
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UserRolePayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: change role
+      tags:
+      - user-manager-apis
+  /user/reset/{uid}:
+    put:
+      consumes:
+      - application/json
+      description: reset password
+      parameters:
+      - description: User ID
+        in: path
+        name: uid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: reset password
+      tags:
+      - user-manager-apis
   /work/all:
     get:
       consumes:
@@ -299,6 +423,8 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: Get all Todos
       tags:
       - todo-manager-apis
@@ -319,6 +445,8 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: Create new Todo
       tags:
       - todo-manager-apis
@@ -338,6 +466,8 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: Delete a Todo
       tags:
       - todo-manager-apis
@@ -357,6 +487,8 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: gets todo by its ID
       tags:
       - todo-manager-apis
@@ -382,7 +514,14 @@ paths:
       responses:
         "200":
           description: ""
+      security:
+      - ApiKeyAuth: []
       summary: Update an ID specified Todo
       tags:
       - todo-manager-apis
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
