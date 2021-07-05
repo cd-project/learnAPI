@@ -14,6 +14,8 @@ import (
 	"github.com/harlow/authtoken"
 )
 
+var usingRole string = "client"
+
 type UserController interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
 	GetByID(w http.ResponseWriter, r *http.Request)
@@ -40,6 +42,7 @@ type userController struct {
 // @Success 200 {object} model.Response
 // @Router /user/all [get]
 func (c *userController) GetAll(w http.ResponseWriter, r *http.Request) {
+
 	var jsonResponse *model.Response
 	users, err := c.userService.GetAll()
 	if err != nil {
@@ -425,6 +428,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 			Success: true,
 		}
 	}
+	usingRole = user.Role
 	render.JSON(w, r, jsonResponse)
 }
 

@@ -5,6 +5,7 @@ import (
 	"log"
 	"todo/model"
 
+	"github.com/casbin/casbin/v2"
 	"github.com/go-chi/jwtauth"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -69,6 +70,7 @@ func loadParameters() {
 	rsaPrivatePath = "./infrastructure/private_key.pem"
 }
 
+// open connection to database
 func openConnection() (*gorm.DB, error) {
 	connectSQL := "host=" + dbHost +
 		" user=" + dbUser +
@@ -117,6 +119,13 @@ func init() {
 	if err := loadAuthToken(); err != nil {
 		ErrLog.Println(err)
 	}
+}
+
+func GetEnforce() *casbin.Enforcer {
+	enforcer, _ := casbin.NewEnforcer("./infrastructure/authz_model.conf",
+		"./infrastructure/authz_policy.csv")
+
+	return enforcer
 }
 
 // GetDB export db
