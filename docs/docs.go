@@ -24,6 +24,31 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/board/all": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get all boards",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "board-manager-apis"
+                ],
+                "summary": "get all boards",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/board/delete/{boardid}": {
             "delete": {
                 "security": [
@@ -49,6 +74,42 @@ var doc = `{
                         "name": "boardid",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/board/filter": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "board db will be filtered using given model",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "board-manager-apis"
+                ],
+                "summary": "filtered data will be shown",
+                "parameters": [
+                    {
+                        "description": "Filter Content",
+                        "name": "FilterContent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Board"
+                        }
                     }
                 ],
                 "responses": {
@@ -164,67 +225,6 @@ var doc = `{
                     {
                         "description": "Board information",
                         "name": "BoardInfo",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Board"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/sys/allBoard": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "get all boards",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "board-manager-apis"
-                ],
-                "summary": "get all boards",
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/sys/filter": {
-            "put": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "board db will be filtered using given model",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "board-manager-apis"
-                ],
-                "summary": "filtered data will be shown",
-                "parameters": [
-                    {
-                        "description": "Filter Content",
-                        "name": "FilterContent",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -675,7 +675,7 @@ var doc = `{
                 }
             }
         },
-        "/work/updater/{id}": {
+        "/work/update/{id}": {
             "put": {
                 "security": [
                     {

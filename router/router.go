@@ -59,7 +59,7 @@ func Router() http.Handler {
 			protectedRoute.Route("/work", func(subRouter chi.Router) {
 				subRouter.Post("/create", todoController.Create)        // user
 				subRouter.Get("/search/{id}", todoController.GetByID)   // user
-				subRouter.Put("/updater/{id}", todoController.Update)   // user
+				subRouter.Put("/update/{id}", todoController.Update)    // user
 				subRouter.Delete("/delete/{id}", todoController.Delete) // user
 				subRouter.Get("/all", todoController.GetAll)            // admin
 			})
@@ -70,7 +70,7 @@ func Router() http.Handler {
 				subRouter.Put("/{boardid}/update", boardController.UpdateBoard)    // user
 				subRouter.Delete("/delete/{boardid}", boardController.DeleteBoard) // user
 				subRouter.Get("/{uid}/allBoard", boardController.GetByUserID)      // user
-				subRouter.Get("/allBoard", boardController.GetAllBoard)            // admin
+				subRouter.Get("/all", boardController.GetAllBoard)                 // admin
 				subRouter.Put("/filter", boardController.Filter)                   // user
 			})
 

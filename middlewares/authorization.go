@@ -25,7 +25,7 @@ func Authorizer(e *casbin.Enforcer) func(next http.Handler) http.Handler {
 				http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 				return
 			}
-
+			log.Println("Line 28 authorization.go: authorization status", result)
 			if result {
 				next.ServeHTTP(w, r)
 			} else {

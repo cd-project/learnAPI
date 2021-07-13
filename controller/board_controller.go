@@ -164,7 +164,7 @@ func (c *boardController) GetByUserID(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Success 200
-// @Router /sys/allBoard [get]
+// @Router /board/all [get]
 func (c *boardController) GetAllBoard(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	allBoards := c.boardService.GetAllBoard()
@@ -188,7 +188,7 @@ func (c *boardController) GetAllBoard(w http.ResponseWriter, r *http.Request) {
 // @Security ApiKeyAuth
 // @Param FilterContent body model.Board true "Filter Content"
 // @Success 200
-// @Router /sys/filter [put]
+// @Router /board/filter [put]
 func (c *boardController) Filter(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jsonResponse := struct {

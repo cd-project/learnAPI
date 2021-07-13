@@ -164,6 +164,21 @@ paths:
       summary: create new Board with given model
       tags:
       - board-manager-apis
+  /board/all:
+    get:
+      consumes:
+      - application/json
+      description: get all boards
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: get all boards
+      tags:
+      - board-manager-apis
   /board/delete/{boardid}:
     delete:
       consumes:
@@ -185,22 +200,7 @@ paths:
       summary: Board with boardID will be deleted
       tags:
       - board-manager-apis
-  /sys/allBoard:
-    get:
-      consumes:
-      - application/json
-      description: get all boards
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ""
-      security:
-      - ApiKeyAuth: []
-      summary: get all boards
-      tags:
-      - board-manager-apis
-  /sys/filter:
+  /board/filter:
     put:
       consumes:
       - application/json
@@ -492,7 +492,7 @@ paths:
       summary: gets todo by its ID
       tags:
       - todo-manager-apis
-  /work/updater/{id}:
+  /work/update/{id}:
     put:
       consumes:
       - application/json

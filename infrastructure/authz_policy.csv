@@ -1,9 +1,15 @@
-p, admin, /work/*, *
-p, admin, /board/*, *
-p, admin, /user/*, *
-p, user, /work/create, POST
-p, user, /work/search/{id}, GET
-p, user, /work/updater/{id}, PUT
-p, user, /work/delete/{id}, DELETE
-p, user, /board/{uid}/create, POST
-p, user, /board/{boardid}/update, PUT
+p, admin, /*, /*, allow
+p, user, /work/create, POST, allow
+p, user, /work/search/*, GET, allow
+p, user, /work/update/*, PUT, allow
+p, user, /work/delete/*, DELETE, allow
+p, user, /board/{uid}/create, POST, allow
+p, user, /board/{boardid}/update, PUT, allow
+p, user, /board/delete/{boardid}, DELETE, allow
+p, user, /board/{uid}/allBoard, GET, allow
+p, user, /board/filter, PUT, allow
+p, user, /user/modify/pwd, PUT, allow
+p, user, /user/modify/role, PUT, allow
+p, user, /user/reset/{uid}, DELETE, allow
+
+

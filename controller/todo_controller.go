@@ -134,7 +134,7 @@ func (c *todoController) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param id path integer true "ID of the to be updated Todo"
 // @Param UpdateContent body model.Todo true "UpdateContent information"
 // @Success 200
-// @Router /work/updater/{id} [put]
+// @Router /work/update/{id} [put]
 func (c *todoController) Update(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	strID := chi.URLParam(r, "id")
